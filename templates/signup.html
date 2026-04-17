@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | AI Health Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="page-center">
+    <div class="auth-card">
+        <div class="brand">
+            <div class="brand-logo">H+</div>
+            <h1>AI Health Assistant</h1>
+            <p>Create your account and access AI-guided health support in a clean and professional experience.</p>
+        </div>
+
+        <div class="form-title">Create Account</div>
+
+        {% if message %}
+            <div class="message-box">{{ message }}</div>
+        {% endif %}
+
+        <form method="POST" action="/signup">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input class="form-input" type="text" name="name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input class="form-input" type="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input class="form-input" type="password" name="password" placeholder="Create a password" required>
+            </div>
+
+            <button class="btn-primary" type="submit">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="/login">Login</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

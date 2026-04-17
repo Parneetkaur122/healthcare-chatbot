@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | AI Health Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">H+</div>
+            <div>
+                <h2>AI Health Assistant</h2>
+                <p>Welcome back, {{ user_name }}. Get symptom guidance and smart report support.</p>
+            </div>
+        </div>
+        <a href="/logout"><button class="btn-secondary">Logout</button></a>
+    </div>
+
+    <div class="grid-2">
+        <div>
+            <div class="card">
+                <h2 class="section-title">Symptom Checker</h2>
+                <p class="section-subtitle">Describe your symptoms and get an AI-based explanation, basic care tips, and guidance on when to seek medical help.</p>
+
+                <form method="POST" action="/predict">
+                    <div class="form-group">
+                        <label class="form-label">Enter your symptoms</label>
+                        <textarea class="form-textarea" name="symptoms" placeholder="Example: I have fever, cough, headache, and weakness" required></textarea>
+                    </div>
+
+                    <button class="btn-primary" type="submit">Analyze Symptoms</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">Advanced Health Chat</h2>
+                <p class="section-subtitle">Talk step by step with your AI health assistant in a doctor-style conversation and upload reports for summary.</p>
+                <a href="/advanced"><button class="action-btn">Open Deep Questioning</button></a>
+            </div>
+
+            {% if emergency %}
+                <div class="emergency-alert">
+                    <strong>Emergency Alert:</strong> Your symptoms may need urgent attention. Please contact a doctor or emergency care as soon as possible.
+                </div>
+            {% endif %}
+
+            {% if result %}
+                <div class="card">
+                    <h2 class="section-title">Analysis Result</h2>
+
+                    {% if result.severity == "Low" %}
+                        <div class="badge badge-low">Low Severity</div>
+                    {% elif result.severity == "Medium" %}
+                        <div class="badge badge-medium">Medium Severity</div>
+                    {% else %}
+                        <div class="badge badge-high">High Severity</div>
+                    {% endif %}
+
+                    <div class="result-box">
+                        <h3>Possible Condition</h3>
+                        <p>{{ result.possible_condition }}</p>
+
+                        <h4>Why This May Match</h4>
+                        <p>{{ result.reason }}</p>
+
+                        <h4>Basic Care</h4>
+                        <p>{{ result.basic_care }}</p>
+
+                        <h4>When to See a Doctor</h4>
+                        <p>{{ result.see_doctor_when }}</p>
+
+                        <h4>Medical Disclaimer</h4>
+                        <p>{{ result.disclaimer }}</p>
+                    </div>
+
+                    <form method="POST" action="/download-report" style="margin-top: 16px;">
+                        <input type="hidden" name="symptoms" value="{{ user_input }}">
+                        <input type="hidden" name="possible_condition" value="{{ result.possible_condition }}">
+                        <input type="hidden" name="reason" value="{{ result.reason }}">
+                        <input type="hidden" name="severity" value="{{ result.severity }}">
+                        <input type="hidden" name="basic_care" value="{{ result.basic_care }}">
+                        <input type="hidden" name="see_doctor_when" value="{{ result.see_doctor_when }}">
+                        <input type="hidden" name="disclaimer" value="{{ result.disclaimer }}">
+                        <button class="action-btn" type="submit">Download Report</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <div class="card">
+                <h2 class="section-title">Recent History</h2>
+                <p class="section-subtitle">Your last symptom checks and severity levels.</p>
+
+                <div class="history-list">
+                    {% if history %}
+                        {% for item in history %}
+                            <div class="history-item">
+                                <h4>{{ item.condition }}</h4>
+                                <p><strong>Symptoms:</strong> {{ item.symptoms }}</p>
+                                <p><strong>Severity:</strong> {{ item.severity }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="history-item">
+                            <p>No previous history found yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

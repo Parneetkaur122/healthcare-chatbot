@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Questioning | AI Health Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">H+</div>
+            <div>
+                <h2>Deep Questioning</h2>
+                <p>Chat with your AI health assistant in a step-by-step doctor-style conversation.</p>
+            </div>
+        </div>
+        <button class="new-chat-btn" onclick="startNewChat()">New Chat</button>
+    </div>
+
+    <div class="card">
+        <div id="chat-box" class="chat-box"></div>
+        <div id="typing-indicator" class="typing" style="display: none;">Doctor is typing...</div>
+
+        <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Describe your symptoms or health concern..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+
+        <div class="upload-section">
+            <h3 class="section-title" style="font-size: 22px;">Upload Medical Report</h3>
+            <p class="section-subtitle">Upload a medical report and get a clear and simple AI-generated summary.</p>
+
+            <div class="upload-row">
+                <input class="file-input" type="file" id="report-file" />
+                <button onclick="uploadReport()">Upload and Summarize</button>
+            </div>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+</div>
+
+<script>
+    function appendMessage(sender, text) {
+        const chatBox = document.getElementById("chat-box");
+        const msg = document.createElement("div");
+        msg.classList.add("message", sender);
+        msg.innerText = text;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showTyping(show) {
+        document.getElementById("typing-indicator").style.display = show ? "block" : "none";
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById("user-input");
+        const text = input.value.trim();
+
+        if (!text) return;
+
+        appendMessage("user", text);
+        input.value = "";
+        showTyping(true);
+
+        try {
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: text })
+            });
+
+            const data = await response.json();
+            showTyping(false);
+            appendMessage("doctor", data.reply);
+        } catch (error) {
+            showTyping(false);
+            appendMessage("doctor", "Sorry, something went wrong while processing your message.");
+        }
+    }
+
+    async function uploadReport() {
+        const fileInput = document.getElementById("report-file");
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert("Please choose a file first.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("report_file", file);
+
+        showTyping(true);
+
+        try {
+            const response = await fetch("/upload-report", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+            showTyping(false);
+
+            if (data.summary) {
+                appendMessage("doctor", "I reviewed your medical report.\n\n" + data.summary);
+            } else if (data.reply) {
+                appendMessage("doctor", data.reply);
+            } else {
+                appendMessage("doctor", "Report uploaded, but no summary was returned.");
+            }
+        } catch (error) {
+            showTyping(false);
+            appendMessage("doctor", "Sorry, there was a problem uploading the report.");
+        }
+    }
+
+    async function startNewChat() {
+        try {
+            await fetch("/reset_chat", {
+                method: "POST"
+            });
+
+            const chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML = "";
+            appendMessage("doctor", "Hello, I’m here to help. Please tell me what symptoms or health concerns you have.");
+        } catch (error) {
+            appendMessage("doctor", "Sorry, I could not start a new chat right now.");
+        }
+    }
+
+    document.getElementById("user-input").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    });
+
+    window.onload = function () {
+        appendMessage("doctor", "Hello, I’m here to help. Please tell me what symptoms or health concerns you have.");
+    };
+</script>
+
+</body>
+</html>

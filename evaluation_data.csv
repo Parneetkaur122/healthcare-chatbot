@@ -1,0 +1,4 @@
+prompt,reference,prediction
+"I have fever and cough","You may have a viral infection. Rest, drink fluids, and consult a doctor if symptoms worsen.","You may have a viral infection. Drink fluids, rest, and see a doctor if symptoms get worse."
+"I have chest pain and difficulty breathing","This may be serious. Seek immediate medical help.","This could be an emergency. Please seek immediate medical attention."
+"My report shows low hemoglobin and high WBC","Low hemoglobin may suggest anemia and high WBC may suggest infection. Please consult a doctor.","The report may indicate anemia and possible infection. Please follow up with a doctor."

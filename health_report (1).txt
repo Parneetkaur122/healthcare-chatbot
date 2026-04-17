@@ -1,0 +1,24 @@
+
+AI Health Assistant Report
+==========================
+
+Symptoms Entered:
+lot of pimples on my face
+
+Possible Condition:
+Acne
+
+Why This May Match:
+Multiple pimples on the face are a common sign of acne.
+
+Severity Level:
+Low
+
+Basic Care:
+Keep the face clean, avoid touching pimples, use mild skincare products.
+
+When to See a Doctor:
+If pimples are painful, widespread, or do not improve with basic care after several weeks.
+
+Medical Disclaimer:
+This is not a diagnosis. Consult a healthcare professional for an accurate assessment.
