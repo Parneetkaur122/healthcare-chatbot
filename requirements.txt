@@ -1,6 +1,7 @@
-Flask
+flask
 openai
+werkzeug
 fpdf
 PyPDF2
 gunicorn
-Werkzeug
+python-dotenv

@@ -5,6 +5,9 @@ from fpdf import FPDF
 import sqlite3
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 import PyPDF2
 import base64
 import mimetypes
